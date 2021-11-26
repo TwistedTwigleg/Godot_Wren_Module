@@ -1,0 +1,155 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Wren_Test_TextEdit/Wren_Test_TextEdit.gd" type="Script" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+
+[node name="Wren_Test_TextEdit" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextEdit" type="TextEdit" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "// Example foreign class
+foreign class Vector2 {
+	construct create(x, y) {}
+	
+	foreign x
+	foreign x()
+	foreign x=(val)
+	foreign y
+	foreign y()
+	foreign y=(val)
+	
+	foreign abs()
+	
+	foreign set(x, y)
+	foreign normalize()
+	foreign get_as_string()
+	foreign print_to_console()
+}
+
+// Example foreign Node
+foreign class Node {
+	construct create() {}
+	
+	foreign name
+	foreign name()
+	foreign name=(new_name)
+	
+	foreign add_child(new_child)
+	foreign get_child(index)
+	foreign get_node(node_path)
+	foreign get_parent()
+	
+	foreign print_to_console()
+}
+
+// Example foreign Node2d
+foreign class Node2d {
+	construct create() {}
+	
+	foreign global_position
+	foreign global_position()
+	foreign global_position=(new_pos)
+	
+	foreign cast_to_node()
+	//foreign static cast_from_node(node)
+	foreign cast_from_node(node)
+	
+	foreign print_to_console()
+}
+
+
+// Example foreign function
+class WrenManager {
+	foreign static WrenExposed(a, b)
+	foreign static WrenGetNode()
+}
+
+// Example Wren code (for testing)
+class Wren_Node {
+	static update(delta_time) {
+		//System.print(\"Delta time passed: %(delta_time)\")
+	}
+}
+System.print(\"Hello from Wren!\")
+System.print(\"Add test %(WrenManager.WrenExposed(10, 20))\")
+
+// ===============================
+var vec = Vector2.create(10, 10)
+
+var vec_x = vec.x()
+var vec_y = vec.y()
+System.print(\"Vector type: %(vec)\")
+System.print(\"Vector X indirect:%(vec_x)\")
+System.print(\"Vector Y indirect:%(vec_y)\")
+//vec.print_to_console()
+
+vec.set(10, 20)
+System.print(\"Vector X:%(vec.x)\")
+System.print(\"Vector Y:%(vec.y)\")
+//vec.print_to_console()
+
+vec.normalize()
+System.print(\"Vector as string: %(vec.get_as_string())\")
+//vec.print_to_console()
+
+vec.set(-20, -40)
+var vec_abs = vec.abs()
+vec.set(10, 10)
+System.print(\"ABS Vector Type: %(vec_abs)\")
+System.print(\"ABS Vector X:%(vec_abs.x)\")
+System.print(\"ABS Vector Y:%(vec_abs.y)\")
+// ===============================
+
+// Node (in memory) testing
+var new_node = Node.create()
+System.print(\"New node name: %(new_node.name)\")
+//
+new_node.name = \"HelloWorld\"
+System.print(\"New node name: %(new_node.name)\")
+
+
+// Node (in actual scene) maniupulation testing
+var manager_node = WrenManager.WrenGetNode()
+System.print(\"Manager name: %(manager_node.name)\")
+// test printing
+var manager_parent = manager_node.get_parent()
+System.print(\"Manager parent name: %(manager_parent.name)\")
+// Get the sprite
+var sprite_as_node = manager_parent.get_node(\"Sprite\")
+System.print(\"Sprite node name: %(sprite_as_node.name)\")
+
+// Convert the sprite to a Node2d class
+//var sprite_as_sprite = Node2d.cast_from_node(sprite_as_node)
+var sprite_as_sprite = Node2d.create()
+sprite_as_sprite.cast_from_node(sprite_as_node)
+System.print(\"Sprite type: %(sprite_as_sprite)\")
+
+// TODO - find a way to call a method that moves these around or whatever
+// For now, just move it down once
+// System.print(\"Sprite name: %(sprite_as_sprite.print_to_console() )\")
+var sprite_global_pos = sprite_as_sprite.global_position
+System.print(\"Sprite Global Pos: %(sprite_global_pos)\")
+sprite_global_pos.y = sprite_global_pos.y + 300
+sprite_global_pos.x = sprite_global_pos.x - 500
+sprite_as_sprite.global_position = sprite_global_pos"
+highlight_current_line = true
+show_line_numbers = true
+draw_tabs = true
+draw_spaces = true
+smooth_scrolling = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WrenManager" type="WrenManager" parent="."]
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 569, 54 )
+texture = ExtResource( 2 )
